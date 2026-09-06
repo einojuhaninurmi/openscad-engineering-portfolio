@@ -1,23 +1,18 @@
-/* 
-   PROJECT: Algorithmic Sweep Generator (Trefoil Knot)
+/* Algorithmic Sweep Generator (Real name of it: Trefoil Knot)
    
-   DESCRIPTION: 
-   OpenSCAD lacks a native sweep function.
-   This script implements a custom sweep engine using:
+   Why did I do this project: 
+   Obviously OpenSCAD doesn't have sweep function, so this code implements a custom sweep engine using:
    1. Parametric path generation (Trefoil Knot).
    2. Frenet-Serret frame approximation (Tangent/Normal vectors).
    3. 4x4 Matrix transformations applied to raw vertex data.
    4. Topology stitching via 'polyhedron()'.
 */
 
-// --- CONFIGURATION ---
 step_count = 150;     // Resolution of the path
 profile_sides = 6;    // Hexagonal cross-section
 path_scale = 30;      // Size of the knot
 tube_radius = 6;      // Thickness of the tube
 twist_factor = 3;     // Artificial twist along the path
-
-// --- MATHEMATICAL FUNCTIONS ---
 
 // 1. Parametric Function for Trefoil Knot (returns [x,y,z])
 function trefoil(t) = 
@@ -56,16 +51,11 @@ function transform_point(m, p) =
         m[2][0]*p[0] + m[2][1]*p[1] + m[2][2]*p[2] + m[2][3]
     ];
 
-// --- MESH GENERATION LOGIC ---
 
-// Generate the backbone path points
 path_points = [ for (i = [0 : step_count]) trefoil(i * 360 / step_count) ];
 
-// Generate the base profile
 raw_profile = get_profile_points(tube_radius, profile_sides);
 
-// CALCULATE VERTICES (The hard part)
-// Iterate through path, calculate tangent, create matrix, transform profile
 all_vertices = [
     for (i = [0 : step_count-1]) 
         let(
@@ -82,7 +72,7 @@ all_vertices = [
             twist_rot = i * twist_factor
         )
         for (pt = raw_profile)
-            // Apply twist -> Apply orientation -> Move to position
+            / Apply twist -> Apply orientation -> Move to position
             p_curr + transform_point(rot_mat, 
                 [pt[0]*cos(twist_rot) - pt[1]*sin(twist_rot), 
                  pt[0]*sin(twist_rot) + pt[1]*cos(twist_rot), 
@@ -90,8 +80,6 @@ all_vertices = [
             )
 ];
 
-// CALCULATE FACES (Stitching the vertices together)
-// Connects ring 'i' to ring 'i+1' with triangles
 faces = [
     for (i = [0 : step_count-1])
         for (j = [0 : profile_sides-1])
@@ -107,8 +95,7 @@ faces = [
                 current_ring_start + next_j
             ] // Creates a quad (OpenSCAD splits to triangles auto)
 ];
-
-// --- RENDER ---
+-
 
 // The final output is a single, mathematically pure object
 color("DeepSkyBlue")
