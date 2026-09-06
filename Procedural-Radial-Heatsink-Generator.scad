@@ -1,19 +1,15 @@
 /* 
    PROJECT: Procedural Radial Heatsink Generator
-   DESCRIPTION: 
-   Generates a radial fin pattern using trigonometric distribution.
+   DESCRIPTION: Generates a radial fin pattern using trigonometric distribution.
    Showcases math-based parametric design and Boolean intersections.
 */
 
-// --- PARAMETERS ---
 base_diameter  = 60;
 core_diameter  = 15;
 height         = 40;
 num_fins       = 36;   // Number of fins around the core
 fin_thickness  = 2;
 twist_angle    = 30;   // Twist of fins from bottom to top (Helix effect)
-
-// --- MAIN GEOMETRY ---
 
 difference() {
     // UNION of all positive shapes
@@ -33,7 +29,6 @@ difference() {
         }
     }
 
-    // --- SUBTRACTIVE GEOMETRY (The CSG approach) ---
     // Cut out a cone from the top to increase surface area/airflow
     translate([0, 0, height])
     cylinder(h = height/2, d1 = base_diameter * 0.8, d2 = 0, center = true, $fn=50);
