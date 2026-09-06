@@ -1,12 +1,9 @@
 /* 
    PROJECT: Parametric PCB Enclosure v1.0
    AUTHOR: Einojuhani Nurmi
-   DESCRIPTION: 
-   A fully parametric box with a snap-fit lid and mounting posts.
+   DESCRIPTION: A fully parametric box with a snap-fit lid and mounting posts.
    Demonstrates difference logic, tolerance handling, and modular design.
 */
-
-// --- PARAMETERS ---
 
 // Inner dimensions of the enclosure
 box_width  = 80; 
@@ -24,8 +21,6 @@ hole_diameter = 2.5;
 
 // Resolution for curves
 $fn = 60;
-
-// --- MODULES ---
 
 // Creates a rounded box shape (Reusable helper)
 module rounded_block(x, y, z, r) {
@@ -104,8 +99,6 @@ module housing_lid() {
         );
     }
 }
-
-// --- ASSEMBLY ---
 
 // 1. Render Body
 housing_body();
